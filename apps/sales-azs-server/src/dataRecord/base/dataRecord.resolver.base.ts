@@ -13,6 +13,12 @@ import * as graphql from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { isRecordNotFoundError } from "../../prisma.util";
 import { MetaQueryPayload } from "../../util/MetaQueryPayload";
+import * as nestAccessControl from "nest-access-control";
+import * as gqlACGuard from "../../auth/gqlAC.guard";
+import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
+import * as common from "@nestjs/common";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { DataRecord } from "./DataRecord";
 import { DataRecordCountArgs } from "./DataRecordCountArgs";
 import { DataRecordFindManyArgs } from "./DataRecordFindManyArgs";
@@ -22,10 +28,20 @@ import { UpdateDataRecordArgs } from "./UpdateDataRecordArgs";
 import { DeleteDataRecordArgs } from "./DeleteDataRecordArgs";
 import { Source } from "../../source/base/Source";
 import { DataRecordService } from "../dataRecord.service";
+@common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => DataRecord)
 export class DataRecordResolverBase {
-  constructor(protected readonly service: DataRecordService) {}
+  constructor(
+    protected readonly service: DataRecordService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
 
+  @graphql.Query(() => MetaQueryPayload)
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "read",
+    possession: "any",
+  })
   async _dataRecordsMeta(
     @graphql.Args() args: DataRecordCountArgs
   ): Promise<MetaQueryPayload> {
@@ -35,14 +51,26 @@ export class DataRecordResolverBase {
     };
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => [DataRecord])
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "read",
+    possession: "any",
+  })
   async dataRecords(
     @graphql.Args() args: DataRecordFindManyArgs
   ): Promise<DataRecord[]> {
     return this.service.dataRecords(args);
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => DataRecord, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "read",
+    possession: "own",
+  })
   async dataRecord(
     @graphql.Args() args: DataRecordFindUniqueArgs
   ): Promise<DataRecord | null> {
@@ -53,7 +81,13 @@ export class DataRecordResolverBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @graphql.Mutation(() => DataRecord)
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "create",
+    possession: "any",
+  })
   async createDataRecord(
     @graphql.Args() args: CreateDataRecordArgs
   ): Promise<DataRecord> {
@@ -71,7 +105,13 @@ export class DataRecordResolverBase {
     });
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @graphql.Mutation(() => DataRecord)
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "update",
+    possession: "any",
+  })
   async updateDataRecord(
     @graphql.Args() args: UpdateDataRecordArgs
   ): Promise<DataRecord | null> {
@@ -99,6 +139,11 @@ export class DataRecordResolverBase {
   }
 
   @graphql.Mutation(() => DataRecord)
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "delete",
+    possession: "any",
+  })
   async deleteDataRecord(
     @graphql.Args() args: DeleteDataRecordArgs
   ): Promise<DataRecord | null> {
@@ -114,9 +159,15 @@ export class DataRecordResolverBase {
     }
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.ResolveField(() => Source, {
     nullable: true,
     name: "source",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "read",
+    possession: "any",
   })
   async getSource(
     @graphql.Parent() parent: DataRecord

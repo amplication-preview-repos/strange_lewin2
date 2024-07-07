@@ -16,9 +16,11 @@ import {
   MaxLength,
   IsOptional,
   ValidateNested,
+  IsEnum,
 } from "class-validator";
 import { DataRecordCreateNestedManyWithoutSourcesInput } from "./DataRecordCreateNestedManyWithoutSourcesInput";
 import { Type } from "class-transformer";
+import { EnumSourceRole } from "./EnumSourceRole";
 
 @InputType()
 class SourceCreateInput {
@@ -45,6 +47,17 @@ class SourceCreateInput {
     nullable: true,
   })
   dataRecords?: DataRecordCreateNestedManyWithoutSourcesInput;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumSourceRole,
+  })
+  @IsEnum(EnumSourceRole)
+  @IsOptional()
+  @Field(() => EnumSourceRole, {
+    nullable: true,
+  })
+  role?: "Option1" | null;
 }
 
 export { SourceCreateInput as SourceCreateInput };

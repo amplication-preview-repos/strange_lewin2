@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { DataRecordModule } from "./dataRecord/dataRecord.module";
 import { SourceModule } from "./source/source.module";
+import { UserModule } from "./user/user.module";
+import { AdminRoleModule } from "./adminRole/adminRole.module";
 import { DataLoaderModule } from "./DataLoader/dataloader.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -11,11 +13,18 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
+import { ACLModule } from "./auth/acl.module";
+import { AuthModule } from "./auth/auth.module";
+
 @Module({
   controllers: [],
   imports: [
+    ACLModule,
+    AuthModule,
     DataRecordModule,
     SourceModule,
+    UserModule,
+    AdminRoleModule,
     DataLoaderModule,
     HealthModule,
     PrismaModule,

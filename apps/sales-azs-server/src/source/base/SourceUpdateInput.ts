@@ -16,9 +16,11 @@ import {
   MaxLength,
   IsOptional,
   ValidateNested,
+  IsEnum,
 } from "class-validator";
 import { DataRecordUpdateManyWithoutSourcesInput } from "./DataRecordUpdateManyWithoutSourcesInput";
 import { Type } from "class-transformer";
+import { EnumSourceRole } from "./EnumSourceRole";
 
 @InputType()
 class SourceUpdateInput {
@@ -45,6 +47,17 @@ class SourceUpdateInput {
     nullable: true,
   })
   dataRecords?: DataRecordUpdateManyWithoutSourcesInput;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumSourceRole,
+  })
+  @IsEnum(EnumSourceRole)
+  @IsOptional()
+  @Field(() => EnumSourceRole, {
+    nullable: true,
+  })
+  role?: "Option1" | null;
 }
 
 export { SourceUpdateInput as SourceUpdateInput };

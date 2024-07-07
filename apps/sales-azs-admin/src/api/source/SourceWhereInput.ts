@@ -6,4 +6,5 @@ export type SourceWhereInput = {
   id?: StringFilter;
   name?: StringNullableFilter;
   dataRecords?: DataRecordListRelationFilter;
+  role?: "Option1";
 };

@@ -5,4 +5,5 @@ export type SourceOrderByInput = {
   createdAt?: SortOrder;
   updatedAt?: SortOrder;
   name?: SortOrder;
+  role?: SortOrder;
 };

@@ -3,4 +3,5 @@ import { DataRecordUpdateManyWithoutSourcesInput } from "./DataRecordUpdateManyW
 export type SourceUpdateInput = {
   name?: string | null;
   dataRecords?: DataRecordUpdateManyWithoutSourcesInput;
+  role?: "Option1" | null;
 };

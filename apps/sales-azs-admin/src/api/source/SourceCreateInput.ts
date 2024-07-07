@@ -3,4 +3,5 @@ import { DataRecordCreateNestedManyWithoutSourcesInput } from "./DataRecordCreat
 export type SourceCreateInput = {
   name?: string | null;
   dataRecords?: DataRecordCreateNestedManyWithoutSourcesInput;
+  role?: "Option1" | null;
 };

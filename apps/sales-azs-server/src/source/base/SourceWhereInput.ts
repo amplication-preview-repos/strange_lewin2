@@ -13,9 +13,10 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { StringFilter } from "../../util/StringFilter";
 import { Type } from "class-transformer";
-import { IsOptional, ValidateNested } from "class-validator";
+import { IsOptional, ValidateNested, IsEnum } from "class-validator";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
 import { DataRecordListRelationFilter } from "../../dataRecord/base/DataRecordListRelationFilter";
+import { EnumSourceRole } from "./EnumSourceRole";
 
 @InputType()
 class SourceWhereInput {
@@ -52,6 +53,17 @@ class SourceWhereInput {
     nullable: true,
   })
   dataRecords?: DataRecordListRelationFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumSourceRole,
+  })
+  @IsEnum(EnumSourceRole)
+  @IsOptional()
+  @Field(() => EnumSourceRole, {
+    nullable: true,
+  })
+  role?: "Option1";
 }
 
 export { SourceWhereInput as SourceWhereInput };

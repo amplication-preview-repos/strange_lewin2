@@ -16,7 +16,11 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { SourceService } from "../source.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { SourceCreateInput } from "./SourceCreateInput";
 import { Source } from "./Source";
 import { SourceFindManyArgs } from "./SourceFindManyArgs";
@@ -26,10 +30,24 @@ import { DataRecordFindManyArgs } from "../../dataRecord/base/DataRecordFindMany
 import { DataRecord } from "../../dataRecord/base/DataRecord";
 import { DataRecordWhereUniqueInput } from "../../dataRecord/base/DataRecordWhereUniqueInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class SourceControllerBase {
-  constructor(protected readonly service: SourceService) {}
+  constructor(
+    protected readonly service: SourceService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Source })
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async createSource(@common.Body() data: SourceCreateInput): Promise<Source> {
     return await this.service.createSource({
       data: data,
@@ -38,13 +56,23 @@ export class SourceControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        role: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Source] })
   @ApiNestedQuery(SourceFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async sources(@common.Req() request: Request): Promise<Source[]> {
     const args = plainToClass(SourceFindManyArgs, request.query);
     return this.service.sources({
@@ -54,13 +82,23 @@ export class SourceControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        role: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Source })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async source(
     @common.Param() params: SourceWhereUniqueInput
   ): Promise<Source | null> {
@@ -71,6 +109,7 @@ export class SourceControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        role: true,
       },
     });
     if (result === null) {
@@ -81,9 +120,18 @@ export class SourceControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Source })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async updateSource(
     @common.Param() params: SourceWhereUniqueInput,
     @common.Body() data: SourceUpdateInput
@@ -97,6 +145,7 @@ export class SourceControllerBase {
           createdAt: true,
           updatedAt: true,
           name: true,
+          role: true,
         },
       });
     } catch (error) {
@@ -112,6 +161,14 @@ export class SourceControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Source })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async deleteSource(
     @common.Param() params: SourceWhereUniqueInput
   ): Promise<Source | null> {
@@ -123,6 +180,7 @@ export class SourceControllerBase {
           createdAt: true,
           updatedAt: true,
           name: true,
+          role: true,
         },
       });
     } catch (error) {
@@ -135,8 +193,14 @@ export class SourceControllerBase {
     }
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id/dataRecords")
   @ApiNestedQuery(DataRecordFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "DataRecord",
+    action: "read",
+    possession: "any",
+  })
   async findDataRecords(
     @common.Req() request: Request,
     @common.Param() params: SourceWhereUniqueInput
@@ -175,6 +239,11 @@ export class SourceControllerBase {
   }
 
   @common.Post("/:id/dataRecords")
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "update",
+    possession: "any",
+  })
   async connectDataRecords(
     @common.Param() params: SourceWhereUniqueInput,
     @common.Body() body: DataRecordWhereUniqueInput[]
@@ -192,6 +261,11 @@ export class SourceControllerBase {
   }
 
   @common.Patch("/:id/dataRecords")
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "update",
+    possession: "any",
+  })
   async updateDataRecords(
     @common.Param() params: SourceWhereUniqueInput,
     @common.Body() body: DataRecordWhereUniqueInput[]
@@ -209,6 +283,11 @@ export class SourceControllerBase {
   }
 
   @common.Delete("/:id/dataRecords")
+  @nestAccessControl.UseRoles({
+    resource: "Source",
+    action: "update",
+    possession: "any",
+  })
   async disconnectDataRecords(
     @common.Param() params: SourceWhereUniqueInput,
     @common.Body() body: DataRecordWhereUniqueInput[]

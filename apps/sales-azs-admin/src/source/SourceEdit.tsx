@@ -7,6 +7,7 @@ import {
   TextInput,
   ReferenceArrayInput,
   SelectArrayInput,
+  SelectInput,
 } from "react-admin";
 
 import { DataRecordTitle } from "../dataRecord/DataRecordTitle";
@@ -24,6 +25,14 @@ export const SourceEdit = (props: EditProps): React.ReactElement => {
         >
           <SelectArrayInput optionText={DataRecordTitle} />
         </ReferenceArrayInput>
+        <SelectInput
+          source="role"
+          label="role"
+          choices={[{ label: "Option 1", value: "Option1" }]}
+          optionText="label"
+          allowEmpty
+          optionValue="value"
+        />
       </SimpleForm>
     </Edit>
   );

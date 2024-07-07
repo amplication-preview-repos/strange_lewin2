@@ -17,9 +17,11 @@ import {
   MaxLength,
   IsOptional,
   ValidateNested,
+  IsEnum,
 } from "class-validator";
 import { Type } from "class-transformer";
 import { DataRecord } from "../../dataRecord/base/DataRecord";
+import { EnumSourceRole } from "./EnumSourceRole";
 
 @ObjectType()
 class Source {
@@ -67,6 +69,17 @@ class Source {
   @Type(() => DataRecord)
   @IsOptional()
   dataRecords?: Array<DataRecord>;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumSourceRole,
+  })
+  @IsEnum(EnumSourceRole)
+  @IsOptional()
+  @Field(() => EnumSourceRole, {
+    nullable: true,
+  })
+  role?: "Option1" | null;
 }
 
 export { Source as Source };

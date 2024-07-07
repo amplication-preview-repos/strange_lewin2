@@ -6,4 +6,5 @@ export type Source = {
   updatedAt: Date;
   name: string | null;
   dataRecords?: Array<DataRecord>;
+  role?: "Option1" | null;
 };
