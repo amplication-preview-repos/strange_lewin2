@@ -1,0 +1,34 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model DataRecord {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  smKey       String?
+  dateTime    DateTime?
+  oilName     String?
+  oilLongName String?
+  literPrice  Float?
+  literLast   Float?
+  amountDeliv Float?
+  typeField   String?
+  literDeliv  Float?
+  amountLast  Float?
+  source      Source?   @relation(fields: [sourceId], references: [id])
+  sourceId    String?
+}
+
+model Source {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  name        String?
+  dataRecords DataRecord[]
+}
