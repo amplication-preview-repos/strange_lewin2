@@ -55,6 +55,7 @@ export class AdminRoleControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        permissions: true,
       },
     });
   }
@@ -80,6 +81,7 @@ export class AdminRoleControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        permissions: true,
       },
     });
   }
@@ -106,6 +108,7 @@ export class AdminRoleControllerBase {
         createdAt: true,
         updatedAt: true,
         name: true,
+        permissions: true,
       },
     });
     if (result === null) {
@@ -141,6 +144,7 @@ export class AdminRoleControllerBase {
           createdAt: true,
           updatedAt: true,
           name: true,
+          permissions: true,
         },
       });
     } catch (error) {
@@ -175,6 +179,7 @@ export class AdminRoleControllerBase {
           createdAt: true,
           updatedAt: true,
           name: true,
+          permissions: true,
         },
       });
     } catch (error) {

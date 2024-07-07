@@ -6,6 +6,7 @@ export const AdminRoleCreate = (props: CreateProps): React.ReactElement => {
     <Create {...props}>
       <SimpleForm>
         <TextInput label="name" source="name" />
+        <TextInput label="permissions" multiline source="permissions" />
       </SimpleForm>
     </Create>
   );

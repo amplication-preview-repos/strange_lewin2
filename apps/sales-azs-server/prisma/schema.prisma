@@ -47,10 +47,11 @@ model User {
 }
 
 model AdminRole {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String?
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  permissions String?
 }
 
 enum EnumSourceRole {

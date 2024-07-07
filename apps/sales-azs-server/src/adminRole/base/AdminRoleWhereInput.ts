@@ -39,6 +39,17 @@ class AdminRoleWhereInput {
     nullable: true,
   })
   name?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  permissions?: StringNullableFilter;
 }
 
 export { AdminRoleWhereInput as AdminRoleWhereInput };

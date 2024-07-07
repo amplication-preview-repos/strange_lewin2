@@ -22,12 +22,14 @@ const CREATE_INPUT = {
   createdAt: new Date(),
   updatedAt: new Date(),
   name: "exampleName",
+  permissions: "examplePermissions",
 };
 const CREATE_RESULT = {
   id: "exampleId",
   createdAt: new Date(),
   updatedAt: new Date(),
   name: "exampleName",
+  permissions: "examplePermissions",
 };
 const FIND_MANY_RESULT = [
   {
@@ -35,6 +37,7 @@ const FIND_MANY_RESULT = [
     createdAt: new Date(),
     updatedAt: new Date(),
     name: "exampleName",
+    permissions: "examplePermissions",
   },
 ];
 const FIND_ONE_RESULT = {
@@ -42,6 +45,7 @@ const FIND_ONE_RESULT = {
   createdAt: new Date(),
   updatedAt: new Date(),
   name: "exampleName",
+  permissions: "examplePermissions",
 };
 
 const service = {

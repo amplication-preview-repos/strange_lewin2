@@ -5,4 +5,5 @@ export type AdminRoleOrderByInput = {
   createdAt?: SortOrder;
   updatedAt?: SortOrder;
   name?: SortOrder;
+  permissions?: SortOrder;
 };

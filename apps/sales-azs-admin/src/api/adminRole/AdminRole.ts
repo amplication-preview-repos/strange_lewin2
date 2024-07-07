@@ -3,4 +3,5 @@ export type AdminRole = {
   createdAt: Date;
   updatedAt: Date;
   name: string | null;
+  permissions: string | null;
 };
